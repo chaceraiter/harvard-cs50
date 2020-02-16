@@ -1,0 +1,98 @@
+#import <stdio.h>
+#import <cs50.h>
+
+int main(void)
+{
+    long cardNo = get_long("Enter card number:\n");
+    
+    //CHECKS LENGTH OF CARD NUMBER IS AT LEAST 13 DIGITS
+    if (cardNo < 1000000000000)
+    {
+        printf("INVALID");
+    }
+
+    //INITIALIZES ALL VALUES OUTSIDE OF LOOP
+    long modNo = 1;
+    int indexFromRight = 0;
+    long cardLastDigit = 0;
+    long cardNoRoundedForDiv = 0;
+    long cardNoLastDigitRemvd = cardNo;
+    int evenDigitRunSum = 0;
+    int cardLastDigitDoubled;
+    int oddDigitRunSum = 0;
+
+    while (modNo < cardNo)
+    {
+        //MODIFIES VALUES FOR CALCULATIONS
+        cardLastDigit = cardNoLastDigitRemvd % 10;
+        cardNoRoundedForDiv = cardNoLastDigitRemvd - cardLastDigit;
+        cardNoLastDigitRemvd = cardNoRoundedForDiv / 10;
+        indexFromRight++;
+        modNo = modNo * 10;
+
+        //ADDS NUMBER TO SUM IF ITS UNDERLINED ONE
+        if (indexFromRight % 2 == 0)
+        {
+            cardLastDigitDoubled = cardLastDigit * 2;
+            
+            //IF DOUBLED NUMBER IS OVER 10
+            if (cardLastDigitDoubled > 10 || cardLastDigitDoubled == 10)
+            {
+                evenDigitRunSum = evenDigitRunSum + 1 + (cardLastDigitDoubled - 10);
+            }
+            
+            //IF DOUBLED NUMBER IS UNDER 10
+            else
+            {
+                evenDigitRunSum = evenDigitRunSum + cardLastDigitDoubled;  
+            }
+            
+        }
+
+        //ADDS NUMBER TO SUM IF ITS NOT UNDERLINED OR MULTIPLIED BY TWO
+        if (indexFromRight % 2 == 1)
+        {
+            oddDigitRunSum = oddDigitRunSum + cardLastDigit;
+        }
+
+        //DEBUGGING OPTIONS
+        printf("INDEX FROM RIGHT %d\n", indexFromRight);
+        printf("cardLastDigit is: %ld\n", cardLastDigit);
+        printf("oddDigitRunSum is: %d\n", oddDigitRunSum);
+        printf("evenDigitRunSum is: %d\n", evenDigitRunSum);
+        printf("\n");
+
+        
+    }
+
+    //ADDS UNDERLINED AND NOT UNDERLINED NUMBERS
+    int totalRunSum = oddDigitRunSum + evenDigitRunSum;
+    printf("Sum is: %d\n", totalRunSum);
+
+    //IF LUHN ALGO FAILS
+    if (totalRunSum != 20)
+    {
+        printf("INVALID");
+    }
+
+    //IF PRIMARY DIGIT MATCHES CARD COMPANY'S
+    else
+    {
+        if (cardLastDigit == 3)
+        {
+            printf("AMEX");
+        }
+        if (cardLastDigit == 5)
+        {
+            printf("MASTERCARD");
+        }
+        if (cardLastDigit == 4)
+        {
+            printf("VISA");
+        }
+        else
+        {
+            printf("INVALID");
+        }
+    }
+}
