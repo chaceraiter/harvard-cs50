@@ -1,0 +1,45 @@
+#include <cs50.h>
+#include <stdio.h>
+
+int height;
+int l;
+
+int main(void)
+{
+    //gets user input height
+    do
+    {
+        height = get_int("Enter pyramid height:\n");
+    }
+    while (height < 1 || height > 8);
+
+    //creates pyramid
+    for (int i = 0; i < height; i++)
+    {
+
+        //aligns left side appropriately
+        for (l = height - i - 1; l > 0; l--)
+        {
+            printf(" ");
+        }
+
+        //prints left side of pyramid
+        for (int j = 0; j <= i; j++)
+        {
+            printf("#");
+        }
+
+        //prints gap in pyramid
+        printf("  ");
+
+
+        //prints right side
+        for (int k = 0; k <= i; k++)
+        {
+            printf("#");
+        }
+
+        //starts next level of pyramid
+        printf("\n");
+    }
+}
