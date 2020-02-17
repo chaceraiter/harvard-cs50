@@ -1,0 +1,113 @@
+#import <stdio.h>
+#import <cs50.h>
+
+//THIS FUNCTION VALIDATES CREDIT CARD NUMBERS
+//NUMBERS ARE CHECKED FOR SEVERAL FACTORS:
+//TYPE, LENGTH, MAJOR PROVIDERS' FIRST NUMBERS, AND LUHN FUNCTION COMPLIANCE
+
+
+int main(void)
+{
+    long cardNo = get_long("Enter card number:\n");
+
+
+    //INITIALIZES ALL VALUES OUTSIDE OF LOOP
+    long modNo = 1;
+    int indexFromRight = 0;
+    long cardLastDigit = 0;
+    long cardNoRoundedForDiv = 0;
+    long cardNoLastDigitRemvd = cardNo;
+    int evenDigitRunSum = 0;
+    int cardLastDigitDoubled;
+    int oddDigitRunSum = 0;
+    int cardNoFirstTwoDigits = 0;
+
+
+    while (modNo < cardNo)
+    {
+        //MODIFIES VALUES FOR CALCULATIONS
+        cardLastDigit = cardNoLastDigitRemvd % 10;
+        cardNoRoundedForDiv = cardNoLastDigitRemvd - cardLastDigit;
+        cardNoLastDigitRemvd = cardNoRoundedForDiv / 10;
+        indexFromRight++;
+        modNo = modNo * 10;
+
+        //STORES FIRST TWO DIGITS FOR PROVIDER CHECK AT END
+        if (cardNoLastDigitRemvd < 100 && cardNoLastDigitRemvd > 9)
+        {
+            cardNoFirstTwoDigits = cardNoLastDigitRemvd;
+        }
+
+
+        //ADDS NUMBER TO SUM IF ITS UNDERLINED ONE
+        if (indexFromRight % 2 == 0)
+        {
+            cardLastDigitDoubled = cardLastDigit * 2;
+            
+            //IF DOUBLED NUMBER IS OVER 10
+            if (cardLastDigitDoubled > 10 || cardLastDigitDoubled == 10)
+            {
+                evenDigitRunSum = evenDigitRunSum + 1 + (cardLastDigitDoubled - 10);
+            }
+            
+            //IF DOUBLED NUMBER IS UNDER 10
+            else
+            {
+                evenDigitRunSum = evenDigitRunSum + cardLastDigitDoubled;  
+            }
+            
+        }
+
+
+        //ADDS NUMBER TO SUM IF ITS NOT UNDERLINED OR MULTIPLIED BY TWO
+        if (indexFromRight % 2 == 1)
+        {
+            oddDigitRunSum = oddDigitRunSum + cardLastDigit;
+        }
+
+
+        //DEBUGGING OPTIONS
+        //printf("INDEX FROM RIGHT %d\n", indexFromRight);
+        //printf("cardLastDigit is: %ld\n", cardLastDigit);
+        //printf("oddDigitRunSum is: %d\n", oddDigitRunSum);
+        //printf("evenDigitRunSum is: %d\n", evenDigitRunSum);
+        //printf("\n");
+
+        
+    }
+
+
+    //ADDS UNDERLINED AND NOT UNDERLINED NUMBERS, CHECKS LAST DIGIT
+    int totalRunSum = oddDigitRunSum + evenDigitRunSum;
+    //printf("Sum is: %d\n", totalRunSum);
+    int totalRunSumLastDigit = totalRunSum % 10;
+    //printf("totalRunSumLastDigit is: %d\n", totalRunSumLastDigit);
+
+    //CHECK IF LUHN ALGO FAILS OR CARD NUMBER IS TOO SHORT
+    if (totalRunSumLastDigit != 0 || cardNo < 1000000000000)
+    {
+        printf("INVALID\n");
+    }
+
+
+    //CHECK IF PRIMARY DIGITS MATCH CARD COMPANIES'
+    else
+    {
+        if (cardNoFirstTwoDigits == 37 || cardNoFirstTwoDigits == 37)
+        {
+            printf("AMEX\n");
+        }
+        else if (cardNoFirstTwoDigits > 50 && cardNoFirstTwoDigits < 56)
+        {
+            printf("MASTERCARD\n");
+        }
+        else if (cardLastDigit == 4)
+        {
+            printf("VISA\n");
+        }
+        else
+        {
+            printf("INVALID\n");
+        }
+    }
+}
