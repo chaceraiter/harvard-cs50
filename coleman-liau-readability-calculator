@@ -1,0 +1,119 @@
+//THIS FUNCTION COMPUTES AND PRINTS THE READABILITY OF A STRING USING THE COLEMAN-LIAU INDEX
+
+
+#include <stdio.h>
+#include <cs50.h>
+#include <string.h>
+#include <math.h>
+
+
+//FUNCTION DECLARATIONS
+float colemanliauCalc(float numLetters, float numSentences);
+int gradePrinter(int indexToPrint);
+
+
+
+//MAIN DECLARATION
+int main(void)
+{
+    //VARIABLE DECLARATIONS OUTSIDE OF LOOPS
+    int sentenceCount = 0;
+    int wordCount = 0;
+    int letterCount = 0;
+
+    //GET STRING FROM USER
+    string userstring = get_string("Text: ");
+
+
+    //NEED NUMBER OF LETTERS, WORDS, AND SENTENCES IN PROMPT
+    //ITERATE THROUGH STRING:
+    for (int i = 0; i <= strlen(userstring); i++)
+    {
+        //IF CHAR AT INDEX IS . ? or !, INCREASE SENTENCE COUNT BY 1
+        if (userstring[i] == '.' || userstring[i] == '?' || userstring[i] == '!')
+        {
+            sentenceCount++;
+        }
+
+        //IF CHAR AT INDEX IS [SPACE], INCREASE WORD COUNT BY 1
+        if (userstring[i] == ' ' || userstring[i] == '\0')
+        {
+            wordCount++;
+        }
+
+        //IF CHAR AT INDEX IS IN ASCII RANGE FOR a -> z or A -> Z, INCREASE LETTER COUNT BY 1
+        if ((userstring[i] >= 'a' && userstring[i] <= 'z') || (userstring[i] >= 'A' && userstring[i] <= 'Z'))
+        {
+            letterCount++;
+        }
+
+        //DEBUGGING
+        //printf
+
+    }
+
+    //MORE DEBUGGING
+    printf("Words: %i\n", wordCount);
+    printf("Letters: %i\n", letterCount);
+    printf("Sentences: %i\n\n", sentenceCount);
+
+
+    float userstringRatio = 100 / ((float) wordCount);
+
+    //NEED AVERAGE NUMBER OF LETTERS PER 100 WORDS
+    //MULTIPLY LETTER COUNT BY RATIO OF (100 WORDS OVER STRING LENGTH IN WORDS)
+    float avgLetters100Words = letterCount * userstringRatio;
+
+
+    //NEED AVERAGE NUMBER OF SENTENCES PER 100 WORDS
+    //MULTIPLY SENTENCE COUNT BY RATIO OF (100 WORDS OVER STRING LENGTH IN WORDS)
+    float avgSentences100Words = sentenceCount * userstringRatio;
+
+
+    //NEED COMEN LAU INDEX
+    //PLUG LETTERS/100 WORDS AND SENTENCES/100 WORDS INTO FORMULA
+    float colemanIndex;
+    colemanIndex = colemanliauCalc(avgLetters100Words, avgSentences100Words);
+
+
+    //ROUND INDEX TO NEAREST WHOLE NUMBER
+    int roundedIndex = round(colemanIndex);
+
+    //PRINT "GRADE [INDEX]". IF INDEX IS LESS THAN ONE PRINT "BEFORE GRADE 1", IF LARGER THAN 16 "GRADE 16+"
+    gradePrinter(roundedIndex);
+
+
+}
+
+
+
+
+
+
+//FUNCTION DEFINITIONS
+float colemanliauCalc(float numLetters, float numSentences)
+{
+    float result;
+    result = (0.0588 * numLetters) - (0.296 * numSentences) - 15.8;
+    return result;
+}
+
+
+int gradePrinter(int indexToPrint)
+{
+    if (indexToPrint < 1)
+    {
+        printf("Before Grade 1\n");
+    }
+
+    else if (indexToPrint > 16)
+    {
+        printf("Grade 16+\n");
+    }
+
+    else
+    {
+        printf("Grade %i\n", indexToPrint);
+    }
+    return indexToPrint;
+}
