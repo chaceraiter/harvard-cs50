@@ -1,0 +1,140 @@
+//THIS FUNCTION TAKES A CIPHER KEY (RE-ORDERED ALPHABET) AS A COMMAND LINE ARGUMENT
+//THE PLAINTEXT THEN ENTERED AT THE PROMPT BY THE USER IS CONVERTED TO CIPHERTEXT
+
+
+#include <stdio.h>
+#include <cs50.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+
+
+//FUNCTION DECLARATIONS
+
+
+
+
+//MAIN DECLARATION
+int main(int argc, string argv[])
+{
+
+    //CREATE ALPHABET REFERENCE STRINGS FOR CONVENIENCE (EASIER THAN REFERENCING ASCII)
+    string upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string lowerAlphabet = "abcdefghijklmnopqrstuvwxyz";
+
+
+
+
+    //USER INPUT EXCEPTION HANDLING:
+
+    //HANDLE BLANK KEY OR TOO MANY ARGUMENTS
+    if (argc != 2)
+    {
+        printf("Key must be single string as additional CLI\n");
+        return 1;
+    }
+
+    string userKey = argv[1];
+
+    //HANDLE INVALID KEY LENGTH
+    string altTest = argv[1];
+    printf("%s", altTest);
+    string altTest2 = argv[1];
+    if (strlen(userKey) != strlen(upperAlphabet))
+    {
+        printf("Key must have 26 characters\n");
+        return 1;
+    }
+
+
+
+
+
+    // //HANDLE KEY WITH NON ALPHABET CHARS
+    for (int m = 0; m < 26; m++)
+    {
+        if ((argv[1][m] < 'A' || argv[1][m] > 'z') || (argv[1][m] > 'Z' && argv[1][m] < 'a'))
+        {
+            printf("All chars must be alphabet chars\n");
+            return 1;
+        }
+    }
+
+    // //HANDLE KEY WITH DUPLICATE LETTERS
+    for (int n = 0; n < 26; n++)
+    {
+        for (int o = 0; o < 26; o++)
+        {
+            if (toupper(altTest[n]) == toupper(altTest[o] && n != o))
+            {
+                printf("Duplicate characters...");
+                return 1;
+            }
+        }
+    }
+
+
+
+
+    //VARIABLE DECLARATION OUTSIDE LOOPS
+    string userPlainText = get_string("plaintext: ");
+    char cipherText[strlen(userPlainText)];
+    char userKeyUpper[26];
+    char userKeyLower[26];
+
+    //CONVERT KEY TO UPPERCASE ND LOWERCASE FOR EASE OF USE
+    //ITERATE THROUGH LEN OF KEY, CHAR BY CHAR
+    for (int l = 0; l < 26; l++)
+    {
+        userKeyUpper[l] = toupper(userKey[l]);
+        userKeyLower[l] = tolower(userKey[l]);
+    }
+
+
+
+
+
+    //CONVERT PLAINTEXT TO CIPHERTEXT BY ITERATING THROUGH PLAINTEXT
+    //EACH PLAINTEXT CHAR CORRESPONDS TO AN INDEX IN THE REGULAR ALPHABET
+    //EACH PLAINTEXT CHAR GETS A LETTER FROM THE INDEX IN THE KEY... THATS THE SAME AS THE REGULAR ALPHABET INDEX
+    //EACH OF THESE NEW CHARS IS SAVED TO THE CIPHERTEXT STRING
+    for (int i = 0; i < strlen(userPlainText); i++)
+    {
+        //LOWERCASE CHECK PREVENTS FULL ITERATION OF BOTH NESTED LOOPS FOR EVERY CHAR
+        if (userPlainText[i] >= 'a' && userPlainText[i] <= 'z')
+        {
+            for (int j = 0; j < 26; j++)
+            {
+                if (userPlainText[i] == lowerAlphabet[j])
+                {
+                    cipherText[i] = userKeyLower[j];
+                }
+            }
+        }
+        //UPPERCASE CHECK PREVENTS FULL ITERATION OF BOTH NESTED LOOPS FOR EVERY CHAR
+        else if (userPlainText[i] >= 'A' && userPlainText[i] <= 'Z')
+        {
+            for (int k = 0; k < 26; k++)
+            {
+                if (userPlainText[i] == upperAlphabet[k])
+                {
+                    cipherText[i] = userKeyUpper[k];
+                }
+            }
+        }
+
+        //SPECIAL CHAR CHECK
+        else
+        {
+            cipherText[i] = userPlainText[i];
+        }
+    }
+
+
+
+    //FINAL OUTPUT
+    printf("ciphertext: %s\n", cipherText);
+    return 0;
+}
